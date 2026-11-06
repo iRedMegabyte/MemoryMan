@@ -9,13 +9,22 @@ Live app: https://iredmegabyte.github.io/MemoryMan/
 ## Features
 
 **Vault**
+- Drag and drop card files or whole folders anywhere on the page. On the vault they are registered on the shelf (dropped folders become watched locations), while a card being asked for at check-in is used to find the updated save. On the Card Editor tab they load into the editor.
 - Scan one or many card images at once and collect every save into a single library.
 - Duplicates are detected by content. A changed save for the same game is kept as a new version (v1, v2, ...).
 - Each save shows its icon, title, product code, block count, status, and the card file it was last seen on.
-- Check Out records who or which system currently holds a save. Check In returns it to the vault.
-- Export Card builds a new memory card from any selected saves, up to 15 blocks. Optionally mark them as checked out in the same step.
+- Check Out generates a new memory card holding the selected saves, saves it as a file, puts it on the shelf marked as out, and records who has it. On Chrome and Edge you choose where the card file is written, so the card stays linked for rechecking.
+- Check In looks for an updated copy of each save by rechecking your shelf and watched folders. If it cannot find one, it asks you to choose the memory card the save was on. An updated save becomes a new version in the vault; if the card still has the original, the save is simply checked back in.
+- Export Card builds a new memory card file from any selected saves, up to 15 blocks, without checking them out.
 - Search and filter by in vault or checked out. A short activity log shows recent changes.
 - Backup and Restore keep your library in a portable .json file.
+
+**Shelf** (on the main screen, above your saves)
+- Every card you add is registered on a shelf and drawn as a PS1 memory card, with a mini grid showing which of its 15 blocks are used.
+- Pick a color per card: classic gray, solid colors, and see-through clear, smoke and tinted cards that show the circuit board inside. Give each card a label.
+- Recheck looks at every linked card file again, and the app also does this quietly when you return to it. A card whose file has disappeared is greyed out and marked MISSING, with a warning count on the Shelf tab and a flag on its saves in the vault. New or changed saves found on a card are added to the vault.
+- Locations lists typical places cards live: DuckStation, ePSXe, Mednafen, RetroArch, SD card readers, and Downloads, plus Add Folder for anything else. Choose a folder once and MemoryMan watches it: Recheck registers new cards it finds there (two levels deep) and marks cards that vanished as MISSING.
+- Cards need to be added with the file picker in a Chromium browser to be linked. Others are shown as Unlinked and cannot be rechecked.
 
 **Card Editor**
 - Two card slots side by side with animated save icons.
@@ -27,7 +36,7 @@ Live app: https://iredmegabyte.github.io/MemoryMan/
 
 1. Open the app and choose Scan Cards. Pick your .mcr, .mcd or other card files.
 2. Click tiles to select saves. The counter shows blocks used out of 15.
-3. Type a holder (for example "Living Room PS1" or a player name) and choose Check Out, or choose Export Card to write a new card file.
+3. Type a holder (for example "Living Room PS1" or a player name) and choose Check Out to generate a card for them. Later, select the saves and choose Check In.
 4. Use Backup now and then, especially before renaming the repo or moving the app to another address.
 
 ## Supported files
@@ -57,6 +66,8 @@ The library is stored in your browser's IndexedDB for the exact address you open
 
 ## Limitations
 
+- Rechecking can only tell whether a card file is still where it was. It cannot see a physical card, and the browser may ask for access to the files again after a restart (the card shows Needs access until you allow it).
+- Browsers cannot read arbitrary paths, so the Locations list only shows where to look and opens the folder picker near a sensible starting point. Folder watching needs Chrome or Edge, and the browser may refuse some top-level system folders (pick a subfolder instead). Folder paths in the list are typical, not guaranteed.
 - Check-out tracking is a manual ledger. The app cannot see where a physical card is. The "Seen" line only updates when you scan a card.
 - Rename supports A to Z, 0 to 9, space and a few punctuation marks, stored as full-width Shift-JIS.
 - Deleted saves are marked free the way the console does it. There is no undelete yet.

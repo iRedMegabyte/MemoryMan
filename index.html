@@ -69,20 +69,36 @@ footer{margin-top:10px;text-align:center;font-size:10px;color:var(--dim)}
 #pal input{font:inherit;letter-spacing:inherit;text-transform:none;color:var(--ink);background:#04061a;border:1px solid var(--edge);padding:5px 7px}
 .sw{all:unset;box-sizing:border-box;width:22px;height:22px;border-radius:50%;border:2px solid #ffffff55;cursor:pointer}
 .sw.on{border-color:#fff;box-shadow:0 0 8px #fff}
+details{margin:10px 0;padding:8px 12px;border:1px solid var(--edge);border-radius:8px;background:#0a0f3a99}
+summary{cursor:pointer;font-size:11px}
+.lr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:6px 0;border-top:1px solid #ffffff14;font-size:10px}
+.lr .n{min-width:120px;font-size:12px}
+.lr .h{flex:1;min-width:180px;color:var(--dim);text-transform:none;letter-spacing:.03em}
+.lr button{all:unset;cursor:pointer;color:var(--hi);padding:2px 4px}
+.lr button:hover{text-decoration:underline}
+.sec{margin:18px 0 6px;font-size:12px;font-weight:700;color:var(--dim);letter-spacing:.25em;border-bottom:1px solid #ffffff22}
+#pal .lk,#ask button{all:unset;cursor:pointer;color:var(--hi);padding:2px 6px;font-size:11px}
+#pal .lk:hover,#ask button:hover{text-decoration:underline}
+#ask{margin:0 0 10px;padding:8px 12px;border:1px solid var(--bad);border-radius:8px;background:#3a2a0a88;font-size:11px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+#ask span{flex:1;min-width:200px;text-transform:none;letter-spacing:.03em}
+#drop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#04061acc;border:3px dashed var(--hi);font-size:18px;letter-spacing:.3em;color:var(--hi);z-index:9;pointer-events:none;text-align:center}
+#drop.on{display:flex}
 @media(max-width:640px){#cards{grid-template-columns:1fr}}
 </style></head><body><main>
 <h1>MemoryMan</h1>
-<div class="tabs"><button id="tv" class="on">Vault</button><button id="ts">Shelf</button><button id="te">Card Editor</button></div>
+<div class="tabs"><button id="tv" class="on">Vault</button><button id="te">Card Editor</button></div>
 <div id="vt">
-<nav><button id="scan">Scan Cards</button><button id="co">Check Out</button><button id="ci">Check In</button><button id="ex">Export Card</button><button id="vd">Remove</button><button id="bk">Backup</button><button id="rs">Restore</button><button id="inst" hidden>Install</button></nav>
-<div id="bar"><input id="q" placeholder="Search"><select id="fl"><option value="">All<option value="in">In vault<option value="out">Checked out</select><input id="who" placeholder="Holder, e.g. Living Room PS1 / Alex"><label><input type="checkbox" id="ac"> Mark out on export</label><span id="cnt"></span></div>
+<nav><button id="scan">Add Cards</button><button id="af">Add Folder</button><button id="rc">Recheck</button><button id="bk">Backup</button><button id="rs">Restore</button><button id="inst" hidden>Install</button></nav>
+<details id="lcd"><summary>Locations</summary><p style="font-size:10px;color:var(--dim);margin:6px 0 0">Browsers cannot look inside folders on their own. Choose a folder once and MemoryMan keeps watching it for new and missing cards. These are typical places; yours may differ.</p><div id="lc"></div></details>
+<div class="sec">Memory Card Shelf</div>
+<div id="pal" hidden><span id="sws" style="display:flex;gap:6px;flex-wrap:wrap"></span><input id="lb" placeholder="Card label" maxlength="40"><button class="lk" id="ao">Open in Editor</button><button class="lk" id="rm">Remove Card</button></div>
+<div id="shg"></div>
+<div class="sec">Saves</div>
+<nav><button id="co">Check Out</button><button id="ci">Check In</button><button id="ex">Export Card</button><button id="vd">Remove</button></nav>
+<div id="ask" hidden><span id="askt"></span><button id="askb">Choose Card</button><button id="askx">Cancel</button></div>
+<div id="bar"><input id="q" placeholder="Search"><select id="fl"><option value="">All<option value="in">In vault<option value="out">Checked out</select><input id="who" placeholder="Holder, e.g. Living Room PS1 / Alex"><select id="cc" title="Color of the card made at check-out"></select><span id="cnt"></span></div>
 <div id="vg"></div>
 <div id="log"></div>
-</div>
-<div id="sh" hidden>
-<nav><button id="ad">Add Cards</button><button id="rc">Recheck</button><button id="ao">Open in Editor</button><button id="rm">Remove Card</button></nav>
-<div id="pal" hidden><span id="sws" style="display:flex;gap:6px;flex-wrap:wrap"></span><input id="lb" placeholder="Card label" maxlength="40"></div>
-<div id="shg"></div>
 </div>
 <div id="ed" hidden>
 <nav>
@@ -98,8 +114,9 @@ footer{margin-top:10px;text-align:center;font-size:10px;color:var(--dim)}
 </div></div>
 <p id="msg"></p>
 <footer>Load .mcr .mcd .srm .gme .vmp &middot; Save writes a raw .mcr &middot; Arrow keys move &middot; Titles are stored as full-width Shift-JIS</footer>
-<input type="file" id="file" hidden><input type="file" id="sfile" multiple hidden><input type="file" id="rfile" accept=".json" hidden>
+<input type="file" id="file" hidden><input type="file" id="sfile" multiple hidden><input type="file" id="rfile" accept=".json" hidden><input type="file" id="afile" multiple hidden>
 </main>
+<div id="drop">Drop card files or folders</div>
 <script>
 const $=s=>document.querySelector(s),BL=8192,SZ=131072;
 const ck=(d,o)=>{let x=0;for(let i=0;i<127;i++)x^=d[o+i];d[o+127]=x};
@@ -160,10 +177,10 @@ $('#save').onclick=async()=>{const c=cards[sel.c],b=c.name.replace(/\.[^.]*$/,''
  try{if(c.h){const w=await c.h.createWritable();await w.write(c.d);await w.close();say('Saved '+c.name)}else{await dl.save({filename:b+'.mcr',data:c.d});say('Saved '+b+'.mcr')}}catch(e){say('Save failed',1)}};
 onkeydown=e=>{if(e.target.tagName==='INPUT')return;const m={ArrowLeft:-1,ArrowRight:1,ArrowUp:-5,ArrowDown:5}[e.key];if(m===undefined)return;e.preventDefault();const n=sel.s+m;if(n>=0&&n<15){sel.s=n;render()}};
 /* ---- Vault ---- */
-let DB={e:[],l:[],c:[]},pick=new Set(),vics=[],lastH='',sc=null,busy=0;
+let DB={e:[],l:[],c:[],d:[]},pick=new Set(),vics=[],lastH='',sc=null,busy=0;
 const idb=(m,f)=>new Promise((res,rej)=>{const r=indexedDB.open('memoryman',1);r.onupgradeneeded=()=>r.result.createObjectStore('k');r.onerror=()=>rej(r.error);r.onsuccess=()=>{const t=r.result.transaction('k',m),q=f(t.objectStore('k'));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error)}});
-const loaded=idb('readonly',o=>o.get('db')).then(j=>{if(j&&j.e){DB={e:j.e,l:j.l||[],c:j.c||[]};vrender()}}).catch(()=>{});
-const snap=b=>({e:DB.e.map(({_c,v,...r})=>r),l:DB.l,c:DB.c.map(k=>b?(({h,...r})=>r)(k):k)}),persist=()=>loaded.then(()=>idb('readwrite',o=>o.put(snap(),'db'))).catch(()=>say('Vault cannot be stored in this browser - back up or export cards',1));
+const loaded=idb('readonly',o=>o.get('db')).then(j=>{if(j&&j.e){DB={e:j.e,l:j.l||[],c:j.c||[],d:j.d||[]};vrender()}}).catch(()=>{});
+const snap=b=>({e:DB.e.map(({_c,v,...r})=>r),l:DB.l,c:DB.c.map(k=>b?(({h,...r})=>r)(k):k),d:b?[]:DB.d}),persist=()=>loaded.then(()=>idb('readwrite',o=>o.put(snap(),'db'))).catch(()=>say('Vault cannot be stored in this browser - back up or export cards',1));
 const lg=m=>{DB.l.unshift({t:Date.now(),m});DB.l.length=Math.min(DB.l.length,40)};
 const el=(t,c,x)=>{const n=document.createElement(t);n.className=c||'';n.textContent=x||'';return n};
 const b64=u=>{let s='';for(let i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s)},unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
@@ -193,8 +210,8 @@ function vrender(){
  $('#cnt').textContent=P.length+' selected / '+bl+' of 15 blocks';$('#cnt').style.color=bl>15?'var(--bad)':'';
  ['co','ci','vd','ex'].forEach(k=>$('#'+k).disabled=!P.length);
  $('#log').textContent='';DB.l.slice(0,6).forEach(x=>$('#log').append(el('div','',new Date(x.t).toLocaleDateString()+' - '+x.m)))}
-function tab(n){[['v','vt'],['s','sh'],['e','ed']].forEach(([k,i])=>$('#'+i).hidden=k!==n);[['tv','v'],['ts','s'],['te','e']].forEach(([i,k])=>$('#'+i).className=k===n?'on':'');n==='v'?vrender():n==='s'?shelf():render()}
-$('#tv').onclick=()=>tab('v');$('#ts').onclick=()=>tab('s');$('#te').onclick=()=>tab('e');
+function tab(n){[['v','vt'],['e','ed']].forEach(([k,i])=>$('#'+i).hidden=k!==n);[['tv','v'],['te','e']].forEach(([i,k])=>$('#'+i).className=k===n?'on':'');n==='v'?(vrender(),shelf()):render()}
+$('#tv').onclick=()=>tab('v');$('#te').onclick=()=>tab('e');
 $('#q').oninput=$('#fl').onchange=vrender;
 /* ---- Shelf ---- */
 const COL={gray:['Classic Gray','#9b9ca3',0],clear:['Clear','#e8f4ff',1],smoke:['Smoke','#3a3a40',1],tblue:['Blue Clear','#3d7bff',1],tred:['Red Clear','#ff4455',1],tgreen:['Green Clear','#3ddc84',1],tpurple:['Purple Clear','#9b59ff',1],blue:['Blue','#2457c5',0],red:['Red','#c42b2b',0],green:['Green','#22914a',0],yellow:['Yellow','#e8c52a',0],orange:['Orange','#e8731f',0],purple:['Purple','#6a3fb5',0],black:['Black','#232326',0],white:['White','#e9e9ee',0]};
@@ -205,15 +222,42 @@ function cardSVG(k){const[,c,t]=COL[k.color]||COL.gray,u=k.used||[],P='M12 6H84L
  let r='';for(let i=0;i<4;i++)r+=`<path d="M16 ${13+i*5}H72" stroke="#000" stroke-opacity=".28" stroke-width="2"/>`;
  const pcb=t?`<g clip-path="url(#sc)"><rect x="6" y="6" width="108" height="120" fill="#17703a"/><rect x="20" y="90" width="30" height="16" fill="#101010"/><rect x="58" y="92" width="18" height="12" fill="#101010"/><rect x="84" y="88" width="14" height="6" fill="#c9a24a"/><rect x="84" y="98" width="14" height="6" fill="#c9a24a"/><path d="M14 40v44M106 40v44" stroke="#7fd68f" stroke-opacity=".5" stroke-width="2"/></g>`:'';
  return `<svg viewBox="0 0 120 132" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient><clipPath id="sc"><path d="${P}"/></clipPath></defs>${pcb}<path d="${P}" fill="${c}" fill-opacity="${t?.4:1}" stroke="#000" stroke-opacity=".55" stroke-width="2"/><path d="${P}" fill="url(#sg)"/>${r}<rect x="18" y="32" width="84" height="52" rx="3" fill="#ecebf2"/><text x="60" y="46" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="9" letter-spacing="1" fill="#222">MEMORY CARD</text>${x}<rect x="26" y="112" width="68" height="10" rx="2" fill="#0d0d12"/>${g}</svg>`}
-function addCard(u,name,h,f){const d=parse(u);if(!d)return null;const c={d,name},own=scan(c),hs=[];let a=0,b=0;
+function addCard(u,name,h,f,dir){const d=parse(u);if(!d)return null;const c={d,name},own=scan(c),hs=[];let a=0,b=0;
  for(let s=0;s<15;s++)if(own[s]===s){addSave(c,s,name)?a++:b++;hs.push(lastH)}
  let k=DB.c.find(x=>x.name===name);if(!k){k={id:Math.random().toString(36).slice(2),name,color:'gray',added:Date.now()};DB.c.push(k)}
- Object.assign(k,{saves:hs,used:own.map(o=>o>=0),mt:f?f.lastModified:0,sz:u.length,chk:Date.now(),st:h||k.h?'ok':'unlinked',miss:0});if(h)k.h=h;return[a,b]}
+ Object.assign(k,{saves:hs,used:own.map(o=>o>=0),mt:f?f.lastModified:0,sz:u.length,chk:Date.now(),st:h||k.h?'ok':'unlinked',miss:0});if(h)k.h=h;if(dir)k.dir=dir;return[a,b]}
 async function scanFiles(it){let a=0,b=0,bad=0;for(const{f,h}of it){const r=addCard(new Uint8Array(await f.arrayBuffer()),f.name,h,f);if(!r){bad++;continue}a+=r[0];b+=r[1]}
  lg('Scanned '+it.length+' file(s): '+a+' new, '+b+' known');persist();vrender();shelf();say(a+' new / '+b+' already in vault'+(bad?' / '+bad+' skipped':''),bad&&!a)}
 $('#sfile').onchange=e=>{const it=[...e.target.files].map(f=>({f,h:null}));e.target.value='';scanFiles(it)};
 $('#scan').onclick=async()=>{if(!window.showOpenFilePicker)return $('#sfile').click();try{const hs=await showOpenFilePicker({multiple:true});scanFiles(await Promise.all(hs.map(async h=>({f:await h.getFile(),h}))))}catch{}};
-$('#ad').onclick=()=>$('#scan').click();
+const LOC=[{k:'duckstation',n:'DuckStation',h:'Documents/DuckStation/memcards (Linux: ~/.local/share/duckstation/memcards, macOS: ~/Library/Application Support/DuckStation/memcards)',s:'documents'},
+{k:'epsxe',n:'ePSXe',h:'The memcards folder inside the ePSXe folder',s:'documents'},
+{k:'mednafen',n:'Mednafen',h:'The sav folder (Linux: ~/.mednafen/sav)',s:'documents'},
+{k:'retroarch',n:'RetroArch',h:'The saves folder inside the RetroArch folder',s:'documents'},
+{k:'sdcard',n:'SD card reader',h:'Memory card folders on an SD card (MemCard PRO, SD2PSX and similar) - check the card root',s:'desktop'},
+{k:'downloads',n:'Downloads',h:'A subfolder of Downloads holding card images',s:'downloads'}];
+async function scanDir(d,user){try{let p=await d.h.queryPermission({mode:'read'});if(p!=='granted'&&user)p=await d.h.requestPermission({mode:'read'});if(p!=='granted'){d.st='locked';return 0}
+ const seen=new Set();let n=0;
+ const walk=async(h,pre,dep)=>{for await(const[nm,e]of h.entries()){if(e.kind==='directory'){if(dep<2)await walk(e,pre+nm+'/',dep+1);continue}
+  if(!/\.(mcr|mcd|mc|srm|bin|gme|vmp)$/i.test(nm))continue;const f=await e.getFile();if(![SZ,SZ+3904,SZ+128].includes(f.size))continue;
+  const name=pre+nm;seen.add(name);const k=DB.c.find(x=>x.name===name);
+  if(!k||k.st==='missing'||f.size!==k.sz||f.lastModified!==k.mt){if(k&&k.st==='missing')lg('Card '+(k.label||k.name)+' is back');const r=addCard(new Uint8Array(await f.arrayBuffer()),name,e,f,d.id);if(r&&!k)n++}else{k.st='ok';k.chk=Date.now();k.dir=d.id}}};
+ await walk(d.h,'',0);
+ DB.c.forEach(k=>{if(k.dir===d.id&&!seen.has(k.name)&&k.st!=='missing'){k.st='missing';k.miss=Date.now();lg('Card '+(k.label||k.name)+' is missing')}});
+ d.st='ok';d.chk=Date.now();return n}catch(e){d.st=e&&e.name==='NotFoundError'?'missing':'locked';return 0}}
+async function scanLoc(r){let d=r.d;
+ if(!d||!d.h){if(!window.showDirectoryPicker)return say('Folder scanning needs Chrome or Edge',1);
+  try{const h=await showDirectoryPicker({id:r.k.slice(0,32),startIn:r.s||'documents'});d=DB.d.find(x=>x.id===r.k);if(!d){d={id:r.k};DB.d.push(d)}d.h=h;d.fn=h.name}catch{return}}
+ say('Scanning '+d.fn+'...');const n=await scanDir(d,1);lg('Scanned folder '+d.fn+': '+n+' new card(s)');persist();shelf();vrender();say(d.st==='ok'?n+' new card(s) in '+d.fn:'Could not read folder ('+d.st+')',d.st!=='ok')}
+function locs(){const C=$('#lc');C.textContent='';
+ LOC.map(l=>({...l,d:DB.d.find(x=>x.id===l.k)})).concat(DB.d.filter(x=>x.id[0]==='f').map(d=>({k:d.id,n:d.fn||'Folder',h:'Custom folder',d}))).forEach(r=>{
+  const d=r.d,n=DB.c.filter(k=>k.dir===r.k).length,w=el('div','lr');
+  w.append(el('span','n',r.n),el('span','h',d?(d.fn||'')+' - '+n+' card'+(n==1?'':'s')+' - '+(d.st==='ok'?'checked '+dt(d.chk):d.st==='locked'?'needs access (press Rescan)':d.st||'not checked'):r.h));
+  const b=el('button','',d?'Rescan':'Choose Folder');b.onclick=()=>scanLoc(r);w.append(b);
+  if(d){const f=el('button','','Forget');f.onclick=()=>{DB.d=DB.d.filter(x=>x!==d);DB.c.forEach(k=>{if(k.dir===d.id)delete k.dir});persist();shelf()};w.append(f)}
+  C.append(w)})}
+$('#af').onclick=()=>scanLoc({k:'f'+Date.now(),s:'documents'});
+Object.entries(COL).forEach(([k,[n]])=>{const o=el('option','',n);o.value=k;$('#cc').append(o)});
 async function recheck(user){if(busy)return;busy=1;let miss=0,chg=0,nw=0,lock=0;
  for(const k of DB.c){if(!k.h)continue;
   try{let p=await k.h.queryPermission({mode:'read'});if(p!=='granted'&&user)p=await k.h.requestPermission({mode:'read'});
@@ -222,18 +266,18 @@ async function recheck(user){if(busy)return;busy=1;let miss=0,chg=0,nw=0,lock=0;
    if(f.size!==k.sz||f.lastModified!==k.mt||k.st==='missing'||k.st==='bad'){const r=addCard(new Uint8Array(await f.arrayBuffer()),k.name,k.h,f);if(r){chg++;nw+=r[0]}else{k.st='bad';continue}}
    k.st='ok';k.chk=Date.now()}
   catch(e){if(e&&e.name==='NotFoundError'){if(k.st!=='missing'){k.miss=Date.now();lg('Card '+(k.label||k.name)+' is missing')}k.st='missing';miss++}else{k.st='locked';lock++}}}
- busy=0;persist();shelf();vrender();
- return DB.c.length?miss+' missing / '+chg+' updated'+(nw?' ('+nw+' new saves)':'')+(lock?' / '+lock+' need access':''):'Nothing to check'}
+ let nc=0;for(const d of DB.d)nc+=await scanDir(d,user);busy=0;persist();shelf();vrender();
+ return DB.c.length||DB.d.length?DB.c.filter(k=>k.st==='missing').length+' missing / '+chg+' updated'+(nw?' ('+nw+' new saves)':'')+(nc?' / '+nc+' new cards':'')+(lock?' / '+lock+' need access':''):'Nothing to check'}
 function shelf(){const G=$('#shg'),k0=cur();G.textContent='';
- if(!DB.c.length)G.append(el('p','','Shelf empty - add card files to register them'));
+ if(!DB.c.length)G.append(el('p','','Shelf empty - drop card files here or use Add Cards'));
  DB.c.forEach(k=>{const b=el('button','cd'+(k===k0?' sel':'')+(k.st==='missing'?' miss':'')),s=el('div'),m=(k.saves||[]).length,u=(k.used||[]).filter(Boolean).length;
   s.innerHTML=cardSVG(k);
   b.append(s,el('div','tt',k.label||k.name),el('span','',m+' save'+(m==1?'':'s')+' / '+u+' of 15 blocks'),el('span','b'+(k.st==='ok'?'':k.st==='missing'?' m':' o'),ST[k.st]||k.st),el('span','',k.st==='missing'?'Missing since '+dt(k.miss):'Checked '+dt(k.chk)));
-  b.onclick=()=>{sc=k.id;shelf()};G.append(b)});
+  if(k.out)b.append(el('span','b o','Out: '+k.out));b.onclick=()=>{sc=k.id;shelf()};G.append(b)});
  const P=$('#sws');P.textContent='';$('#pal').hidden=!k0;
  if(k0){Object.entries(COL).forEach(([key,[n,c,t]])=>{const w=el('button','sw'+(k0.color===key?' on':''));w.title=n;w.style.background=t?'linear-gradient('+c+'99,'+c+'99),repeating-conic-gradient(#99a 0 25%,#556 0 50%) 0/8px 8px':c;w.onclick=()=>{k0.color=key;persist();shelf()};P.append(w)});$('#lb').value=k0.label||''}
- ['ao','rm'].forEach(i=>$('#'+i).disabled=!k0);$('#rc').disabled=!DB.c.length;
- const n=DB.c.filter(k=>k.st==='missing').length;$('#ts').textContent='Shelf'+(n?' \u26A0 '+n:'');$('#ts').style.color=n?'var(--bad)':''}
+ ['ao','rm'].forEach(i=>$('#'+i).disabled=!k0);$('#rc').disabled=!(DB.c.length||DB.d.length);
+ const n=DB.c.filter(k=>k.st==='missing').length;$('#tv').textContent='Vault'+(n?' \u26A0 '+n:'');$('#tv').style.color=n?'var(--bad)':'';locs()}
 $('#rc').onclick=async()=>{say('Checking...');const r=await recheck(1);say(r||'Already checking')};
 $('#lb').onchange=e=>{const k=cur();if(k){k.label=e.target.value.trim();persist();shelf()}};
 $('#rm').onclick=function(){ask('r',this,()=>{DB.c=DB.c.filter(x=>x.id!==sc);sc=null;lg('Removed a card from the shelf');persist();shelf();say('Card removed from shelf (its saves stay in the vault)')})};
@@ -241,14 +285,55 @@ $('#ao').onclick=async()=>{const k=cur();if(!k||!k.h)return say('This card is no
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)recheck(0)});
 loaded.then(()=>recheck(0));
 $('#tov').onclick=()=>{const c=cards[sel.c],o=scan(c)[sel.s];if(o<0)return say('Select a save first',1);const r=addSave(c,o,c.name);if(r)lg('Added a save from '+c.name);persist();say(r?'Added to vault':'Already in vault')};
-$('#co').onclick=()=>{const w=$('#who').value.trim();if(!w)return say('Enter who or which system holds the save',1);const P=sp();P.forEach(e=>{e.out=w;e.at=Date.now()});lg('Checked out '+P.length+' to '+w);persist();vrender();say('Checked out to '+w)};
-$('#ci').onclick=()=>{const P=sp();P.forEach(e=>e.out='');lg('Checked in '+P.length+' save(s)');persist();vrender();say('Checked in')};
+let pend=[];
+const newer=e=>DB.e.filter(x=>x.fn===e.fn&&x.id!==e.id&&x.h!==e.h&&x.added>(e.at||e.added)).sort((a,b)=>b.added-a.added)[0];
+function back(e,x,how){const k=DB.c.find(c=>c.id===e.card);e.out='';e.card='';if(x)x.out='';lg('Checked in '+e.t+(x?' with an updated save from '+x.seen:' unchanged ('+how+')'));if(k&&!DB.e.some(y=>y.card===k.id&&y.out))delete k.out}
+async function checkOut(){const w=$('#who').value.trim();if(!w)return say('Enter who or which system will hold the card',1);
+ const P=sp().filter(e=>!e.out);if(!P.length)return say('Select saves that are in the vault',1);
+ const bl=P.reduce((a,e)=>a+e.n,0);if(bl>15)return say('Too many blocks for one card: '+bl+' of 15',1);
+ const c=mk('x');P.forEach(e=>place(c,e));
+ const base=w.replace(/[^\w -]/g,'').trim()||'card';let name=base+'.mcr',i=1,h=null,f=null;while(DB.c.some(k=>k.name===name))name=base+'-'+ ++i+'.mcr';
+ try{if(window.showSaveFilePicker){h=await showSaveFilePicker({suggestedName:name,types:[{description:'PS1 memory card',accept:{'application/octet-stream':['.mcr']}}]});const wr=await h.createWritable();await wr.write(c.d);await wr.close();f=await h.getFile();name=h.name}else await dl.save({filename:name,data:c.d})}
+ catch(x){return x&&x.name==='AbortError'?say('Cancelled - nothing checked out'):say('Could not write the card file',1)}
+ addCard(c.d,name,h,f);const k=DB.c.find(x=>x.name===name);k.color=$('#cc').value;k.out=w;k.gen=1;
+ P.forEach(e=>{e.out=w;e.at=Date.now();e.card=k.id;pick.delete(e.id)});
+ lg('Checked out '+P.length+' save(s) to '+w+' on '+name);persist();vrender();shelf();say('Checked out to '+w+' - card '+name+' created')}
+async function checkIn(list){const L=list.filter(e=>e.out);if(!L.length)return say('Select saves that are checked out',1);
+ say('Looking for updated saves...');await recheck(1);
+ const miss=[];let up=0;L.forEach(e=>{const x=newer(e);if(x){back(e,x);up++}else miss.push(e)});
+ persist();vrender();shelf();
+ if(!miss.length){$('#ask').hidden=true;pend=[];return say('Checked in '+L.length+' save(s), '+up+' with updates')}
+ pend=miss.map(e=>e.id);$('#askt').textContent='No updated copy of '+miss.map(e=>e.t).join(', ')+' found. Choose the memory card it was on.';$('#ask').hidden=false;say(up?up+' checked in. '+miss.length+' need the memory card':'Memory card needed',1)}
+$('#co').onclick=checkOut;$('#ci').onclick=()=>checkIn(sp());
+async function giveCards(it){const names=new Set(it.map(x=>x.f.name));await scanFiles(it);
+ const miss=[];let up=0,same=0;
+ DB.e.filter(e=>pend.includes(e.id)).forEach(e=>{const x=newer(e);if(x){back(e,x);up++}else if(DB.c.some(k=>names.has(k.name)&&(k.saves||[]).includes(e.h))){back(e,null,'found on the card you chose');same++}else miss.push(e)});
+ persist();vrender();shelf();pend=miss.map(e=>e.id);
+ if(!miss.length){$('#ask').hidden=true;say('Checked in '+(up+same)+' save(s): '+up+' updated, '+same+' unchanged')}
+ else{$('#askt').textContent='Still no copy of '+miss.map(e=>e.t).join(', ')+' on that card. Try another card.';say('Not found on that card',1)}}
+$('#askb').onclick=async()=>{let it;try{if(window.showOpenFilePicker){const hs=await showOpenFilePicker({multiple:true});it=await Promise.all(hs.map(async h=>({f:await h.getFile(),h})))}
+ else it=await new Promise(r=>{const i=$('#afile');i.onchange=()=>{r([...i.files].map(f=>({f,h:null})));i.value=''};i.oncancel=()=>r([]);i.click()})}catch{return}
+ if(it.length)giveCards(it)};
+/* ---- Drag and drop ---- */
+let dc=0;const dz=$('#drop'),isF=e=>e.dataTransfer&&[...e.dataTransfer.types].includes('Files');
+addEventListener('dragenter',e=>{if(!isF(e))return;e.preventDefault();dc++;dz.classList.add('on')});
+addEventListener('dragover',e=>{if(isF(e))e.preventDefault()});
+addEventListener('dragleave',()=>{if(--dc<=0){dc=0;dz.classList.remove('on')}});
+async function toEditor(fl){let n=0;for(const{f,h}of fl.slice(0,2)){const d=parse(new Uint8Array(await f.arrayBuffer()));if(!d)continue;cards[(sel.c+n++)%2]={d,name:f.name,h:h&&f.size===SZ?h:null}}
+ if(n){sel.s=0;render();say('Loaded '+n+' card file(s)')}else say('Not a memory card image',1)}
+async function dropDir(h){const d={id:'f'+Date.now()+Math.floor(Math.random()*99),h,fn:h.name};DB.d.push(d);const n=await scanDir(d,1);lg('Watching folder '+h.name+': '+n+' new card(s)');persist();shelf();vrender();say(n+' new card(s) in '+h.name)}
+addEventListener('drop',async e=>{if(!isF(e))return;e.preventDefault();dc=0;dz.classList.remove('on');
+ const its=[...e.dataTransfer.items].filter(i=>i.kind==='file'),fs=its.map(i=>i.getAsFile()),hs=its.map(i=>i.getAsFileSystemHandle?i.getAsFileSystemHandle().catch(()=>null):Promise.resolve(null));
+ const H=await Promise.all(hs),fl=[];
+ for(let i=0;i<its.length;i++){const h=H[i];if(h&&h.kind==='directory'){await dropDir(h);continue}
+  if(h&&h.kind==='file')fl.push({f:await h.getFile(),h});else if(fs[i])fl.push({f:fs[i],h:null})}
+ if(!fl.length)return;
+ if(!$('#ed').hidden)await toEditor(fl);else if(pend.length)await giveCards(fl);else await scanFiles(fl)});
+$('#askx').onclick=()=>{pend=[];$('#ask').hidden=true;say('Still checked out')};
 $('#vd').onclick=function(){ask('v',this,()=>{const n=pick.size;DB.e=DB.e.filter(e=>!pick.has(e.id));pick.clear();lg('Removed '+n+' save(s)');persist();vrender();say('Removed from vault')})};
-$('#ex').onclick=async()=>{const P=sp(),bl=P.reduce((a,e)=>a+e.n,0);if(bl>15)return say('Too many blocks: '+bl+' of 15',1);if(!dl)return say('Saving is unavailable here',1);
+$('#ex').onclick=async()=>{const P=sp(),bl=P.reduce((a,e)=>a+e.n,0);if(!P.length)return say('Select saves first',1);if(bl>15)return say('Too many blocks: '+bl+' of 15',1);
  const c=mk('PSX-VAULT.mcr');P.forEach(e=>place(c,e));
- try{await dl.save({filename:'PSX-VAULT.mcr',data:c.d});const w=$('#who').value.trim(),m=$('#ac').checked&&w;
-  if(m)P.forEach(e=>{e.out=w;e.at=Date.now()});lg('Exported '+P.length+' save(s) as a new card'+(m?' and checked out to '+w:''));persist();vrender();say('Card exported')}
- catch(x){if(x&&x.code!=='declined')say('Export failed: '+(x.code||'error'),1)}};
+ try{await dl.save({filename:'PSX-VAULT.mcr',data:c.d});lg('Exported '+P.length+' save(s) as a new card');persist();vrender();say('Card exported')}catch(x){say('Export failed',1)}};
 setInterval(()=>{fr++;ics.concat(vics).forEach(i=>icon(i.c,i.s||0,i.cv,fr))},450);
 render();vrender();shelf();
 dl={save:async({filename:n,data:d})=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([d]));a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}};$('#save').disabled=false;
