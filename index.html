@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#04061a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>MemoryMan - PSX Save Vault</title>
+<style>
+:root{color-scheme:dark;--bg1:#22338a;--bg2:#04061a;--p1:#b4bada;--p2:#555b8a;--cell:#0a0f35;--edge:#3b479b;--ink:#eef1ff;--dim:#8d97d6;--hi:#7fd0ff;--bad:#ffb347;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,var(--bg1),var(--bg2) 72%) fixed #04061a;color:var(--ink);font:700 13px/1.35 "Trebuchet MS",Verdana,sans-serif;letter-spacing:.1em;text-transform:uppercase}
+[hidden]{display:none!important}
+main{max-width:920px;margin:0 auto;padding:18px 14px 28px}
+h1{margin:6px 0 14px;text-align:center;font-size:22px;letter-spacing:.35em;text-shadow:0 0 14px var(--hi)}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;margin-bottom:16px}
+nav button{all:unset;cursor:pointer;padding:6px 4px;color:var(--ink);font:inherit}
+nav button:hover,nav button:focus-visible{color:var(--hi)}
+nav button:hover::before{content:"\25B8 ";color:var(--hi)}
+nav button:disabled{opacity:.35;cursor:default}
+nav button:disabled::before{content:""}
+#cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{padding:12px;border-radius:10px;background:linear-gradient(160deg,var(--p1),var(--p2));box-shadow:0 0 0 2px #fff3 inset,0 8px 24px #0009;color:#0b1033;opacity:.72}
+.card.on{opacity:1;box-shadow:0 0 0 2px #fff inset,0 0 22px #7fd0ff66}
+.card h2{margin:0 0 10px;font-size:13px;display:flex;justify-content:space-between;gap:8px}
+.card h2 small{font-size:10px;opacity:.7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.cell{all:unset;box-sizing:border-box;cursor:pointer;aspect-ratio:1;display:grid;place-items:center;background:linear-gradient(var(--cell),#141b55);border:2px solid var(--edge);border-radius:3px}
+.cell canvas{width:78%;image-rendering:pixelated}
+.cell.link canvas{opacity:.5}
+.cell.grp{border-color:var(--hi);background:#1d2b7a}
+.cell.cur{border-color:#fff;box-shadow:0 0 10px #fff;animation:p 1s ease-in-out infinite alternate}
+@keyframes p{to{box-shadow:0 0 2px #fff}}
+.free{margin-top:8px;font-size:10px;text-align:right}
+#info{margin-top:16px;padding:12px 14px;border:2px solid var(--edge);border-radius:8px;background:#0a0f3acc;display:grid;grid-template-columns:auto 1fr;gap:4px 14px}
+#info span:nth-child(odd){color:var(--dim)}
+#nm{font:inherit;letter-spacing:inherit;text-transform:none;color:var(--ink);background:#04061a;border:1px solid var(--edge);padding:4px 6px;width:100%;box-sizing:border-box}
+#msg{min-height:18px;margin:12px 0 0;text-align:center;color:var(--hi)}
+#msg.e{color:var(--bad)}
+footer{margin-top:10px;text-align:center;font-size:10px;color:var(--dim)}
+.tabs{display:flex;justify-content:center;gap:26px;margin-bottom:14px}
+.tabs button{all:unset;cursor:pointer;padding:4px 2px;border-bottom:2px solid transparent}
+.tabs button.on{color:var(--hi);border-color:var(--hi)}
+#bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:12px;font-size:11px}
+#bar input:not([type=checkbox]),#bar select{font:inherit;letter-spacing:inherit;text-transform:none;color:var(--ink);background:#04061a;border:1px solid var(--edge);padding:5px 7px}
+#bar #who{flex:1;min-width:160px}
+#vg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+#vg>p{grid-column:1/-1;text-align:center;color:var(--dim)}
+.tile{all:unset;box-sizing:border-box;cursor:pointer;padding:10px;border-radius:8px;background:linear-gradient(160deg,var(--p1),var(--p2));color:#0b1033;display:flex;flex-direction:column;gap:4px;font-size:10px;opacity:.8}
+.tile.sel{opacity:1;outline:3px solid #fff;box-shadow:0 0 16px var(--hi)}
+.tile canvas{width:48px;padding:4px;background:var(--cell);border-radius:3px;image-rendering:pixelated}
+.tt{font-size:12px;word-break:break-word}
+.b{align-self:flex-start;padding:2px 6px;border-radius:3px;background:var(--cell);color:var(--hi)}
+.b.o{color:var(--bad)}
+#log{margin-top:14px;font-size:10px;color:var(--dim);line-height:1.8}
+@media(max-width:640px){#cards{grid-template-columns:1fr}}
+</style></head><body><main>
+<h1>MemoryMan</h1>
+<div class="tabs"><button id="tv" class="on">Vault</button><button id="te">Card Editor</button></div>
+<div id="vt">
+<nav><button id="scan">Scan Cards</button><button id="co">Check Out</button><button id="ci">Check In</button><button id="ex">Export Card</button><button id="vd">Remove</button><button id="bk">Backup</button><button id="rs">Restore</button><button id="inst" hidden>Install</button></nav>
+<div id="bar"><input id="q" placeholder="Search"><select id="fl"><option value="">All<option value="in">In vault<option value="out">Checked out</select><input id="who" placeholder="Holder, e.g. Living Room PS1 / Alex"><label><input type="checkbox" id="ac"> Mark out on export</label><span id="cnt"></span></div>
+<div id="vg"></div>
+<div id="log"></div>
+</div>
+<div id="ed" hidden>
+<nav>
+<button id="load">Load</button><button id="tov">To Vault</button><button id="save" disabled>Save</button><button id="copy">Copy &rarr; Other</button><button id="del">Delete</button><button id="ren">Rename</button><button id="fmt">Format</button>
+</nav>
+<div id="cards"></div>
+<div id="info">
+<span>Title</span><span id="t"></span>
+<span>File</span><span id="f"></span>
+<span>Region</span><span id="r"></span>
+<span>Blocks</span><span id="n"></span>
+<span>Rename</span><input id="nm" maxlength="32" placeholder="A-Z 0-9 space - . : ! &amp;" autocomplete="off">
+</div></div>
+<p id="msg"></p>
+<footer>Load .mcr .mcd .srm .gme .vmp &middot; Save writes a raw .mcr &middot; Arrow keys move &middot; Titles are stored as full-width Shift-JIS</footer>
+<input type="file" id="file" hidden><input type="file" id="sfile" multiple hidden><input type="file" id="rfile" accept=".json" hidden>
+</main>
+<script>
+const $=s=>document.querySelector(s),BL=8192,SZ=131072;
+const ck=(d,o)=>{let x=0;for(let i=0;i<127;i++)x^=d[o+i];d[o+127]=x};
+function freeSlot(d,s){const o=(s+1)*128;d.fill(0,o,o+128);d[o]=0xA0;d[o+8]=d[o+9]=255;ck(d,o)}
+function fmt(d){d.fill(0);d[0]=77;d[1]=67;ck(d,0);for(let s=0;s<15;s++)freeSlot(d,s);for(let i=16;i<36;i++){const o=i*128;d.fill(255,o,o+4);d[o+8]=d[o+9]=255;ck(d,o)}}
+const mk=n=>{const d=new Uint8Array(SZ);fmt(d);return{d,name:n}};
+const cards=[mk('BLANK1.MCR'),mk('BLANK2.MCR')];
+let sel={c:0,s:0},fr=0,ics=[],arm=null,dl=null;
+const st=(c,s)=>c.d[(s+1)*128];
+const nxt=(c,s)=>{const o=(s+1)*128,n=c.d[o+8]|c.d[o+9]<<8;return n===0xFFFF||n>14?-1:n};
+function scan(c){const own=Array(15).fill(-1);for(let s=0;s<15;s++){if(st(c,s)!==0x51)continue;let k=s,n=0;while(k>=0&&n++<15){own[k]=s;k=nxt(c,k)}}return own}
+function title(c,s){const o=(s+1)*BL,d=c.d;if(d[o]!==83||d[o+1]!==67)return'(no title)';let a=d.subarray(o+4,o+68);const z=a.indexOf(0);if(z>=0)a=a.subarray(0,z);try{return new TextDecoder('shift_jis').decode(a)}catch{return'?'}}
+function icon(c,s,cv,f){const o=(s+1)*BL,d=c.d,fl=d[o+2],n=fl===0x12?2:fl===0x13?3:1,b=o+0x80+(f%n)*128,g=cv.getContext('2d'),im=g.createImageData(16,16);
+for(let p=0;p<256;p++){const v=d[b+(p>>1)],ix=p&1?v>>4:v&15,pc=o+0x60+ix*2,w=d[pc]|d[pc+1]<<8,q=p*4;if(!w)continue;im.data[q]=(w&31)<<3;im.data[q+1]=(w>>5&31)<<3;im.data[q+2]=(w>>10&31)<<3;im.data[q+3]=255}g.putImageData(im,0,0)}
+function say(m,e){const p=$('#msg');p.textContent=m;p.className=e?'e':''}
+function render(){
+ ics=[];const M=$('#cards');M.textContent='';
+ cards.forEach((c,ci)=>{
+  const own=scan(c),p=document.createElement('section'),ref=own[sel.s];
+  p.className='card'+(sel.c===ci?' on':'');
+  const h=document.createElement('h2'),a=document.createElement('span'),b=document.createElement('small');
+  a.textContent='Memory Card '+(ci+1);b.textContent=c.name;h.append(a,b);
+  const G=document.createElement('div');G.className='grid';
+  for(let s=0;s<15;s++){
+   const x=document.createElement('button'),o=own[s];x.className='cell';
+   if(o>=0){const cv=document.createElement('canvas');cv.width=cv.height=16;x.append(cv);ics.push({c,s:o,cv});if(o!==s)x.classList.add('link')}
+   if(sel.c===ci){if(s===sel.s)x.classList.add('cur');else if(o>=0&&o===ref)x.classList.add('grp')}
+   x.onclick=()=>{sel={c:ci,s};render()};G.append(x)}
+  let n=0;for(let s=0;s<15;s++)if(st(c,s)>=0xA0)n++;
+  const f=document.createElement('div');f.className='free';f.textContent='Free '+n+' / 15';
+  p.append(h,G,f);M.append(p)});
+ ics.forEach(i=>icon(i.c,i.s,i.cv,fr));info()}
+function info(){
+ const c=cards[sel.c],o=scan(c)[sel.s],E=o<0;
+ $('#nm').disabled=E;$('#ren').disabled=E;$('#del').disabled=E;$('#copy').disabled=E;
+ if(E){$('#t').textContent='Empty';$('#f').textContent='-';$('#r').textContent='-';$('#n').textContent='-';$('#nm').value='';return}
+ const x=(o+1)*128,fn=String.fromCharCode(...c.d.subarray(x+10,x+31)).replace(/\0[\s\S]*/,''),sz=(c.d[x+4]|c.d[x+5]<<8|c.d[x+6]<<16)/BL,t=title(c,o).normalize('NFKC');
+ $('#t').textContent=t;$('#f').textContent=fn;$('#r').textContent={I:'Japan',A:'America',E:'Europe'}[fn[1]]||'-';$('#n').textContent=sz;$('#nm').value=t}
+const MAP={' ':0x8140,'-':0x817C,'.':0x8144,':':0x8146,'!':0x8149,'&':0x8195};
+function sj(t){const r=[];for(const ch of t){const k=ch.charCodeAt(0);let w=MAP[ch];if(!w){if(k>=48&&k<=57)w=0x824F+k-48;else if(k>=65&&k<=90)w=0x8260+k-65;else if(k>=97&&k<=122)w=0x8281+k-97;else continue}r.push(w>>8,w&255)}return r.slice(0,64)}
+function ask(k,btn,fn){if(arm===k){arm=null;btn.textContent=btn.dataset.l;fn();return}arm=k;btn.dataset.l=btn.textContent;btn.textContent='Sure?';setTimeout(()=>{if(arm===k){arm=null;btn.textContent=btn.dataset.l}},3000)}
+function chain(c,o){const r=[];let k=o;while(k>=0&&r.length<15){r.push(k);k=nxt(c,k)}return r}
+$('#ren').onclick=()=>{const c=cards[sel.c],o=scan(c)[sel.s];if(o<0)return;const b=sj($('#nm').value),p=(o+1)*BL+4;c.d.fill(0,p,p+64);c.d.set(b,p);render();say('Renamed')};
+$('#del').onclick=function(){ask('d',this,()=>{const c=cards[sel.c],o=scan(c)[sel.s];if(o<0)return;chain(c,o).forEach(k=>{const x=(k+1)*128;c.d[x]+=0x50;ck(c.d,x)});render();say('Save deleted')})};
+$('#fmt').onclick=function(){ask('f',this,()=>{fmt(cards[sel.c].d);render();say('Card '+(sel.c+1)+' formatted')})};
+$('#copy').onclick=()=>{const a=cards[sel.c],b=cards[1-sel.c],o=scan(a)[sel.s];if(o<0)return;
+ const ch=chain(a,o),fs=[];for(let s=0;s<15;s++)if(st(b,s)>=0xA0)fs.push(s);
+ if(fs.length<ch.length)return say('Not enough free blocks on card '+(2-sel.c),1);
+ ch.forEach((k,j)=>{const t=fs[j],x=(t+1)*128;b.d.set(a.d.subarray((k+1)*128,(k+2)*128),x);const n=j<ch.length-1?fs[j+1]:0xFFFF;b.d[x+8]=n&255;b.d[x+9]=n>>8;ck(b.d,x);b.d.set(a.d.subarray((k+1)*BL,(k+2)*BL),(t+1)*BL)});
+ sel={c:1-sel.c,s:fs[0]};render();say('Copied '+ch.length+' block(s)')};
+$('#load').onclick=()=>$('#file').click();
+$('#file').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+ const u=new Uint8Array(await f.arrayBuffer()),off={[SZ]:0,[SZ+3904]:3904,[SZ+128]:128}[u.length];
+ if(off===undefined)return say('Not a 128 KB memory card image',1);
+ const d=u.slice(off,off+SZ);if(d[0]!==77||d[1]!==67)return say('No MC header found',1);
+ cards[sel.c]={d,name:f.name};sel.s=0;render();say('Loaded into card '+(sel.c+1))};
+$('#save').onclick=async()=>{const c=cards[sel.c],b=c.name.replace(/\.[^.]*$/,'')||'card';
+ try{if(c.h){const w=await c.h.createWritable();await w.write(c.d);await w.close();say('Saved '+c.name)}else{await dl.save({filename:b+'.mcr',data:c.d});say('Saved '+b+'.mcr')}}catch(e){say('Save failed',1)}};
+onkeydown=e=>{if(e.target.tagName==='INPUT')return;const m={ArrowLeft:-1,ArrowRight:1,ArrowUp:-5,ArrowDown:5}[e.key];if(m===undefined)return;e.preventDefault();const n=sel.s+m;if(n>=0&&n<15){sel.s=n;render()}};
+/* ---- Vault ---- */
+let DB={e:[],l:[]},pick=new Set(),vics=[];
+const idb=(m,f)=>new Promise((res,rej)=>{const r=indexedDB.open('memoryman',1);r.onupgradeneeded=()=>r.result.createObjectStore('k');r.onerror=()=>rej(r.error);r.onsuccess=()=>{const t=r.result.transaction('k',m),q=f(t.objectStore('k'));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error)}});
+const loaded=idb('readonly',o=>o.get('db')).then(j=>{if(j&&j.e){DB={e:j.e,l:j.l||[]};vrender()}}).catch(()=>{});
+const snap=()=>({e:DB.e.map(({_c,v,...r})=>r),l:DB.l}),persist=()=>loaded.then(()=>idb('readwrite',o=>o.put(snap(),'db'))).catch(()=>say('Vault cannot be stored in this browser - back up or export cards',1));
+const lg=m=>{DB.l.unshift({t:Date.now(),m});DB.l.length=Math.min(DB.l.length,40)};
+const el=(t,c,x)=>{const n=document.createElement(t);n.className=c||'';n.textContent=x||'';return n};
+const b64=u=>{let s='';for(let i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s)},unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const S=128+BL,sp=()=>DB.e.filter(e=>pick.has(e.id));
+function parse(u){const off={[SZ]:0,[SZ+3904]:3904,[SZ+128]:128}[u.length];if(off===undefined)return null;const d=u.slice(off,off+SZ);return d[0]===77&&d[1]===67?d:null}
+function addSave(c,o,src){const ch=chain(c,o),u=new Uint8Array(ch.length*S);
+ ch.forEach((k,j)=>{u.set(c.d.subarray((k+1)*128,(k+2)*128),j*S);u.set(c.d.subarray((k+1)*BL,(k+2)*BL),j*S+128)});
+ const x=(o+1)*128,fn=String.fromCharCode(...c.d.subarray(x+10,x+31)).replace(/\0[\s\S]*/,'');
+ let h=2166136261;for(const ch2 of fn)h=Math.imul(h^ch2.charCodeAt(0),16777619);
+ for(let i=0;i<u.length;i++)if(i%S>=128)h=Math.imul(h^u[i],16777619);
+ const hx=(h>>>0).toString(16)+'-'+u.length,ex=DB.e.find(e=>e.h===hx);
+ if(ex){ex.seen=src;return 0}
+ DB.e.push({id:Math.random().toString(36).slice(2),fn,t:title(c,o).normalize('NFKC'),n:ch.length,h:hx,d:b64(u),src,seen:src,added:Date.now(),out:''});return 1}
+function place(c,e){const u=unb64(e.d),n=u.length/S,fs=[];for(let s=0;s<15;s++)if(st(c,s)>=0xA0)fs.push(s);if(fs.length<n)return false;
+ for(let j=0;j<n;j++){const t=fs[j],x=(t+1)*128;c.d.set(u.subarray(j*S,j*S+128),x);const nx=j<n-1?fs[j+1]:0xFFFF;c.d[x+8]=nx&255;c.d[x+9]=nx>>8;ck(c.d,x);c.d.set(u.subarray(j*S+128,(j+1)*S),(t+1)*BL)}return true}
+function vrender(){
+ const tot={},cur={};DB.e.sort((a,b)=>a.added-b.added);DB.e.forEach(e=>tot[e.fn]=(tot[e.fn]||0)+1);DB.e.forEach(e=>{cur[e.fn]=(cur[e.fn]||0)+1;e.v=cur[e.fn]});
+ const q=$('#q').value.toLowerCase(),f=$('#fl').value,G=$('#vg');G.textContent='';vics=[];
+ const A=DB.e.filter(e=>(!q||(e.t+e.fn).toLowerCase().includes(q))&&(!f||(f==='out')===!!e.out));
+ if(!A.length)G.append(el('p','',DB.e.length?'No matches':'Vault empty - scan memory cards to begin'));
+ A.forEach(e=>{const t=el('button','tile'+(pick.has(e.id)?' sel':'')),cv=document.createElement('canvas');cv.width=cv.height=16;
+  if(!e._c){const d=new Uint8Array(2*BL);d.set(unb64(e.d).subarray(128,S),BL);e._c={d}}
+  vics.push({c:e._c,cv});icon(e._c,0,cv,fr);
+  t.append(cv,el('div','tt',e.t),el('span','',e.fn+(tot[e.fn]>1?' / v'+e.v:'')),el('span','',e.n+' block'+(e.n>1?'s':'')),el('span','b'+(e.out?' o':''),e.out?'Out: '+e.out+' ('+new Date(e.at).toLocaleDateString()+')':'In vault'),el('span','','Seen: '+e.seen));
+  t.onclick=()=>{pick.has(e.id)?pick.delete(e.id):pick.add(e.id);vrender()};G.append(t)});
+ const P=sp(),bl=P.reduce((a,e)=>a+e.n,0);
+ $('#cnt').textContent=P.length+' selected / '+bl+' of 15 blocks';$('#cnt').style.color=bl>15?'var(--bad)':'';
+ ['co','ci','vd','ex'].forEach(k=>$('#'+k).disabled=!P.length);
+ $('#log').textContent='';DB.l.slice(0,6).forEach(x=>$('#log').append(el('div','',new Date(x.t).toLocaleDateString()+' - '+x.m)))}
+function tab(n){$('#vt').hidden=n!=='v';$('#ed').hidden=n!=='e';$('#tv').className=n==='v'?'on':'';$('#te').className=n==='e'?'on':'';n==='v'?vrender():render()}
+$('#tv').onclick=()=>tab('v');$('#te').onclick=()=>tab('e');
+$('#q').oninput=$('#fl').onchange=vrender;
+$('#scan').onclick=()=>$('#sfile').click();
+$('#sfile').onchange=async e=>{const fs=[...e.target.files];e.target.value='';let a=0,b=0,bad=0;
+ for(const f of fs){const d=parse(new Uint8Array(await f.arrayBuffer()));if(!d){bad++;continue}const c={d,name:f.name},own=scan(c);for(let s=0;s<15;s++)if(own[s]===s)addSave(c,s,f.name)?a++:b++}
+ lg('Scanned '+fs.length+' file(s): '+a+' new, '+b+' known');persist();vrender();say(a+' new / '+b+' already in vault'+(bad?' / '+bad+' skipped':''),bad&&!a)};
+$('#tov').onclick=()=>{const c=cards[sel.c],o=scan(c)[sel.s];if(o<0)return say('Select a save first',1);const r=addSave(c,o,c.name);if(r)lg('Added a save from '+c.name);persist();say(r?'Added to vault':'Already in vault')};
+$('#co').onclick=()=>{const w=$('#who').value.trim();if(!w)return say('Enter who or which system holds the save',1);const P=sp();P.forEach(e=>{e.out=w;e.at=Date.now()});lg('Checked out '+P.length+' to '+w);persist();vrender();say('Checked out to '+w)};
+$('#ci').onclick=()=>{const P=sp();P.forEach(e=>e.out='');lg('Checked in '+P.length+' save(s)');persist();vrender();say('Checked in')};
+$('#vd').onclick=function(){ask('v',this,()=>{const n=pick.size;DB.e=DB.e.filter(e=>!pick.has(e.id));pick.clear();lg('Removed '+n+' save(s)');persist();vrender();say('Removed from vault')})};
+$('#ex').onclick=async()=>{const P=sp(),bl=P.reduce((a,e)=>a+e.n,0);if(bl>15)return say('Too many blocks: '+bl+' of 15',1);if(!dl)return say('Saving is unavailable here',1);
+ const c=mk('PSX-VAULT.mcr');P.forEach(e=>place(c,e));
+ try{await dl.save({filename:'PSX-VAULT.mcr',data:c.d});const w=$('#who').value.trim(),m=$('#ac').checked&&w;
+  if(m)P.forEach(e=>{e.out=w;e.at=Date.now()});lg('Exported '+P.length+' save(s) as a new card'+(m?' and checked out to '+w:''));persist();vrender();say('Card exported')}
+ catch(x){if(x&&x.code!=='declined')say('Export failed: '+(x.code||'error'),1)}};
+setInterval(()=>{fr++;ics.concat(vics).forEach(i=>icon(i.c,i.s||0,i.cv,fr))},450);
+render();vrender();
+dl={save:async({filename:n,data:d})=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([d]));a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}};$('#save').disabled=false;
+$('#bk').onclick=()=>dl.save({filename:'memoryman-backup.json',data:JSON.stringify(snap())}).then(()=>say('Backup saved'));
+$('#rs').onclick=()=>$('#rfile').click();
+$('#rfile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{const j=JSON.parse(await f.text());let n=0;
+ for(const x of j.e||[])if(x&&x.h&&x.d&&!DB.e.some(y=>y.h===x.h)){DB.e.push({id:x.id||Math.random().toString(36).slice(2),fn:x.fn,t:x.t,n:x.n,h:x.h,d:x.d,src:x.src||'',seen:x.seen||'',added:x.added||Date.now(),out:x.out||'',at:x.at});n++}
+ lg('Restored '+n+' save(s) from backup');persist();vrender();say(n+' restored')}catch{say('Not a MemoryMan backup',1)}};
+let ip;addEventListener('beforeinstallprompt',e=>{e.preventDefault();ip=e;$('#inst').hidden=false});
+$('#inst').onclick=async()=>{if(!ip)return;ip.prompt();await ip.userChoice;ip=null;$('#inst').hidden=true};
+if('launchQueue' in window)launchQueue.setConsumer(async p=>{let k=0;for(const h of p.files){const f=await h.getFile(),d=parse(new Uint8Array(await f.arrayBuffer()));if(!d)continue;cards[k++%2]={d,name:f.name,h:f.size===SZ?h:null}}if(k){sel.s=0;tab('e');say('Opened '+k+' card file(s)')}});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+</script></body></html>
