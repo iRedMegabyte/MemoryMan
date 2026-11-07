@@ -13,9 +13,9 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,var(--bg1),var(--bg2) 72%) fixed #04061a;color:var(--ink);font:700 13px/1.35 "Trebuchet MS",Verdana,sans-serif;letter-spacing:.1em;text-transform:uppercase}
 [hidden]{display:none!important}
-main{max-width:920px;margin:0 auto;padding:18px 14px 28px}
-h1{margin:6px 0 14px;text-align:center;font-size:22px;letter-spacing:.35em;text-shadow:0 0 14px var(--hi)}
-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;margin-bottom:16px}
+main{padding:10px 12px 14px}
+h1{margin:0;font-size:16px;letter-spacing:.3em;text-shadow:0 0 14px var(--hi)}
+nav{display:flex;flex-wrap:wrap;gap:2px 16px;margin-bottom:8px}
 nav button{all:unset;cursor:pointer;padding:6px 4px;color:var(--ink);font:inherit}
 nav button:hover,nav button:focus-visible{color:var(--hi)}
 nav button:hover::before{content:"\25B8 ";color:var(--hi)}
@@ -34,13 +34,13 @@ nav button:disabled::before{content:""}
 .cell.cur{border-color:#fff;box-shadow:0 0 10px #fff;animation:p 1s ease-in-out infinite alternate}
 @keyframes p{to{box-shadow:0 0 2px #fff}}
 .free{margin-top:8px;font-size:10px;text-align:right}
-#info{margin-top:16px;padding:12px 14px;border:2px solid var(--edge);border-radius:8px;background:#0a0f3acc;display:grid;grid-template-columns:auto 1fr;gap:4px 14px}
+#info{margin-top:0;padding:12px 14px;border:2px solid var(--edge);border-radius:8px;background:#0a0f3acc;display:grid;grid-template-columns:auto 1fr;gap:4px 14px}
 #info span:nth-child(odd){color:var(--dim)}
 #nm{font:inherit;letter-spacing:inherit;text-transform:none;color:var(--ink);background:#04061a;border:1px solid var(--edge);padding:4px 6px;width:100%;box-sizing:border-box}
-#msg{min-height:18px;margin:12px 0 0;text-align:center;color:var(--hi)}
+#msg{margin:0 0 0 auto;font-size:12px;text-align:right;color:var(--hi);max-width:60%}
 #msg.e{color:var(--bad)}
 footer{margin-top:10px;text-align:center;font-size:10px;color:var(--dim)}
-.tabs{display:flex;justify-content:center;gap:26px;margin-bottom:14px}
+.tabs{display:flex;gap:20px}
 .tabs button{all:unset;cursor:pointer;padding:4px 2px;border-bottom:2px solid transparent}
 .tabs button.on{color:var(--hi);border-color:var(--hi)}
 #bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:12px;font-size:11px}
@@ -55,7 +55,7 @@ footer{margin-top:10px;text-align:center;font-size:10px;color:var(--dim)}
 .b{align-self:flex-start;padding:2px 6px;border-radius:3px;background:var(--cell);color:var(--hi)}
 .b.o{color:var(--bad)}
 #log{margin-top:14px;font-size:10px;color:var(--dim);line-height:1.8}
-.cd{all:unset;box-sizing:border-box;cursor:pointer;position:relative;padding:12px 12px 18px;display:flex;flex-direction:column;gap:3px;font-size:10px;transition:transform .15s}
+.cd{all:unset;box-sizing:border-box;cursor:pointer;position:relative;padding:8px 6px 14px;display:flex;flex-direction:column;gap:2px;font-size:9px;transition:transform .15s}
 .cd::after{content:"";position:absolute;left:0;right:0;bottom:0;height:8px;background:linear-gradient(#8a90b8,#3a3f66);border-top:1px solid #c9ceee}
 .cd svg{width:100%;filter:drop-shadow(0 4px 4px #0008)}
 .cd.sel{transform:translateY(-6px)}
@@ -63,42 +63,53 @@ footer{margin-top:10px;text-align:center;font-size:10px;color:var(--dim)}
 .cd.miss svg{filter:grayscale(1) opacity(.4)}
 .cd.miss .tt{color:#ff7b7b}
 .b.m{background:#b3202a;color:#fff;animation:p 1s ease-in-out infinite alternate}
-#shg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-top:10px}
+#shg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));margin-top:4px}
 #shg>p{grid-column:1/-1;text-align:center;color:var(--dim)}
 #pal{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
 #pal input{font:inherit;letter-spacing:inherit;text-transform:none;color:var(--ink);background:#04061a;border:1px solid var(--edge);padding:5px 7px}
 .sw{all:unset;box-sizing:border-box;width:22px;height:22px;border-radius:50%;border:2px solid #ffffff55;cursor:pointer}
 .sw.on{border-color:#fff;box-shadow:0 0 8px #fff}
-details{margin:10px 0;padding:8px 12px;border:1px solid var(--edge);border-radius:8px;background:#0a0f3a99}
+details{margin:6px 0;padding:6px 10px;border:1px solid var(--edge);border-radius:8px;background:#0a0f3a99}
 summary{cursor:pointer;font-size:11px}
 .lr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:6px 0;border-top:1px solid #ffffff14;font-size:10px}
 .lr .n{min-width:120px;font-size:12px}
 .lr .h{flex:1;min-width:180px;color:var(--dim);text-transform:none;letter-spacing:.03em}
 .lr button{all:unset;cursor:pointer;color:var(--hi);padding:2px 4px}
 .lr button:hover{text-decoration:underline}
-.sec{margin:18px 0 6px;font-size:12px;font-weight:700;color:var(--dim);letter-spacing:.25em;border-bottom:1px solid #ffffff22}
+.sec{margin:8px 0 4px;font-size:12px;font-weight:700;color:var(--dim);letter-spacing:.25em;border-bottom:1px solid #ffffff22}
 #pal .lk,#ask button{all:unset;cursor:pointer;color:var(--hi);padding:2px 6px;font-size:11px}
 #pal .lk:hover,#ask button:hover{text-decoration:underline}
 #ask{margin:0 0 10px;padding:8px 12px;border:1px solid var(--bad);border-radius:8px;background:#3a2a0a88;font-size:11px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
 #ask span{flex:1;min-width:200px;text-transform:none;letter-spacing:.03em}
+#ask #askw{flex:none;min-width:0;display:flex;gap:6px;flex-wrap:wrap}
 #drop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#04061acc;border:3px dashed var(--hi);font-size:18px;letter-spacing:.3em;color:var(--hi);z-index:9;pointer-events:none;text-align:center}
 #drop.on{display:flex}
+#top{display:flex;align-items:center;gap:6px 22px;flex-wrap:wrap;margin-bottom:8px}
+#vt{display:grid;grid-template-columns:300px minmax(0,1fr);gap:14px;align-items:start}
+#dock{position:sticky;top:8px;max-height:calc(100vh - 24px);overflow:auto;padding:8px 10px;border:1px solid var(--edge);border-radius:10px;background:#0a0f3a88}
+#dock nav{gap:0 12px;font-size:11px}
+#dock nav button{padding:3px 0}
+#ed:not([hidden]){display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:0 14px;align-items:start}
+#ed>nav{grid-column:1/-1}
+@media(max-width:760px){#vt,#ed:not([hidden]){grid-template-columns:1fr}#dock{position:static;max-height:none}#msg{max-width:100%;margin:0;text-align:left}}
 @media(max-width:640px){#cards{grid-template-columns:1fr}}
 </style></head><body><main>
-<h1>MemoryMan</h1>
-<div class="tabs"><button id="tv" class="on">Vault</button><button id="te">Card Editor</button></div>
+<header id="top"><h1>MemoryMan</h1><div class="tabs"><button id="tv" class="on">Vault</button><button id="te">Card Editor</button></div><p id="msg"></p></header>
 <div id="vt">
+<aside id="dock">
 <nav><button id="scan">Add Cards</button><button id="af">Add Folder</button><button id="rc">Recheck</button><button id="bk">Backup</button><button id="rs">Restore</button><button id="inst" hidden>Install</button></nav>
 <details id="lcd"><summary>Locations</summary><p style="font-size:10px;color:var(--dim);margin:6px 0 0">Browsers cannot look inside folders on their own. Choose a folder once and MemoryMan keeps watching it for new and missing cards. These are typical places; yours may differ.</p><div id="lc"></div></details>
 <div class="sec">Memory Card Shelf</div>
 <div id="pal" hidden><span id="sws" style="display:flex;gap:6px;flex-wrap:wrap"></span><input id="lb" placeholder="Card label" maxlength="40"><button class="lk" id="ao">Open in Editor</button><button class="lk" id="rm">Remove Card</button></div>
 <div id="shg"></div>
-<div class="sec">Saves</div>
+</aside>
+<section id="sv">
 <nav><button id="co">Check Out</button><button id="ci">Check In</button><button id="ex">Export Card</button><button id="vd">Remove</button></nav>
-<div id="ask" hidden><span id="askt"></span><button id="askb">Choose Card</button><button id="askx">Cancel</button></div>
+<div id="ask" hidden><span id="askt"></span><span id="askw"></span><button id="askb">Choose Card</button><button id="askx">Cancel</button></div>
 <div id="bar"><input id="q" placeholder="Search"><select id="fl"><option value="">All<option value="in">In vault<option value="out">Checked out</select><input id="who" placeholder="Holder, e.g. Living Room PS1 / Alex"><select id="cc" title="Color of the card made at check-out"></select><span id="cnt"></span></div>
 <div id="vg"></div>
 <div id="log"></div>
+</section>
 </div>
 <div id="ed" hidden>
 <nav>
@@ -112,7 +123,6 @@ summary{cursor:pointer;font-size:11px}
 <span>Blocks</span><span id="n"></span>
 <span>Rename</span><input id="nm" maxlength="32" placeholder="A-Z 0-9 space - . : ! &amp;" autocomplete="off">
 </div></div>
-<p id="msg"></p>
 <footer>Load .mcr .mcd .srm .gme .vmp &middot; Save writes a raw .mcr &middot; Arrow keys move &middot; Titles are stored as full-width Shift-JIS</footer>
 <input type="file" id="file" hidden><input type="file" id="sfile" multiple hidden><input type="file" id="rfile" accept=".json" hidden><input type="file" id="afile" multiple hidden>
 </main>
@@ -179,7 +189,7 @@ onkeydown=e=>{if(e.target.tagName==='INPUT')return;const m={ArrowLeft:-1,ArrowRi
 /* ---- Vault ---- */
 let DB={e:[],l:[],c:[],d:[]},pick=new Set(),vics=[],lastH='',sc=null,busy=0;
 const idb=(m,f)=>new Promise((res,rej)=>{const r=indexedDB.open('memoryman',1);r.onupgradeneeded=()=>r.result.createObjectStore('k');r.onerror=()=>rej(r.error);r.onsuccess=()=>{const t=r.result.transaction('k',m),q=f(t.objectStore('k'));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error)}});
-const loaded=idb('readonly',o=>o.get('db')).then(j=>{if(j&&j.e){DB={e:j.e,l:j.l||[],c:j.c||[],d:j.d||[]};vrender()}}).catch(()=>{});
+const loaded=idb('readonly',o=>o.get('db')).then(j=>{if(j&&j.e){DB={e:j.e,l:j.l||[],c:j.c||[],d:j.d||[]};DB.e.forEach(norm);vrender()}}).catch(()=>{});
 const snap=b=>({e:DB.e.map(({_c,v,...r})=>r),l:DB.l,c:DB.c.map(k=>b?(({h,...r})=>r)(k):k),d:b?[]:DB.d}),persist=()=>loaded.then(()=>idb('readwrite',o=>o.put(snap(),'db'))).catch(()=>say('Vault cannot be stored in this browser - back up or export cards',1));
 const lg=m=>{DB.l.unshift({t:Date.now(),m});DB.l.length=Math.min(DB.l.length,40)};
 const el=(t,c,x)=>{const n=document.createElement(t);n.className=c||'';n.textContent=x||'';return n};
@@ -193,18 +203,18 @@ function addSave(c,o,src){const ch=chain(c,o),u=new Uint8Array(ch.length*S);
  for(let i=0;i<u.length;i++)if(i%S>=128)h=Math.imul(h^u[i],16777619);
  const hx=(h>>>0).toString(16)+'-'+u.length,ex=DB.e.find(e=>e.h===hx);
  lastH=hx;if(ex){ex.seen=src;return 0}
- DB.e.push({id:Math.random().toString(36).slice(2),fn,t:title(c,o).normalize('NFKC'),n:ch.length,h:hx,d:b64(u),src,seen:src,added:Date.now(),out:''});return 1}
+ DB.e.push({id:Math.random().toString(36).slice(2),fn,t:title(c,o).normalize('NFKC'),n:ch.length,h:hx,d:b64(u),src,seen:src,added:Date.now(),outs:[]});return 1}
 function place(c,e){const u=unb64(e.d),n=u.length/S,fs=[];for(let s=0;s<15;s++)if(st(c,s)>=0xA0)fs.push(s);if(fs.length<n)return false;
  for(let j=0;j<n;j++){const t=fs[j],x=(t+1)*128;c.d.set(u.subarray(j*S,j*S+128),x);const nx=j<n-1?fs[j+1]:0xFFFF;c.d[x+8]=nx&255;c.d[x+9]=nx>>8;ck(c.d,x);c.d.set(u.subarray(j*S+128,(j+1)*S),(t+1)*BL)}return true}
 function vrender(){
- const tot={},cur={};DB.e.sort((a,b)=>a.added-b.added);DB.e.forEach(e=>tot[e.fn]=(tot[e.fn]||0)+1);DB.e.forEach(e=>{cur[e.fn]=(cur[e.fn]||0)+1;e.v=cur[e.fn]});
+ const tot={},cur={};DB.e.forEach(norm);DB.e.sort((a,b)=>a.added-b.added);DB.e.forEach(e=>tot[e.fn]=(tot[e.fn]||0)+1);DB.e.forEach(e=>{cur[e.fn]=(cur[e.fn]||0)+1;e.v=cur[e.fn]});
  const q=$('#q').value.toLowerCase(),f=$('#fl').value,G=$('#vg');G.textContent='';vics=[];
- const A=DB.e.filter(e=>(!q||(e.t+e.fn).toLowerCase().includes(q))&&(!f||(f==='out')===!!e.out));
+ const A=DB.e.filter(e=>(!q||(e.t+e.fn).toLowerCase().includes(q))&&(!f||(f==='out')===!!(e.outs&&e.outs.length)));
  if(!A.length)G.append(el('p','',DB.e.length?'No matches':'Vault empty - scan memory cards to begin'));
  A.forEach(e=>{const t=el('button','tile'+(pick.has(e.id)?' sel':'')),cv=document.createElement('canvas');cv.width=cv.height=16;
   if(!e._c){const d=new Uint8Array(2*BL);d.set(unb64(e.d).subarray(128,S),BL);e._c={d}}
   vics.push({c:e._c,cv});icon(e._c,0,cv,fr);
-  t.append(cv,el('div','tt',e.t),el('span','',e.fn+(tot[e.fn]>1?' / v'+e.v:'')),el('span','',e.n+' block'+(e.n>1?'s':'')),el('span','b'+(e.out?' o':''),e.out?'Out: '+e.out+' ('+new Date(e.at).toLocaleDateString()+')':'In vault'),el('span','','Seen: '+e.seen+(DB.c.some(k=>k.name===e.seen&&k.st==='missing')?' (card missing!)':'')));
+  t.append(cv,el('div','tt',e.t),el('span','',e.fn+(tot[e.fn]>1?' / v'+e.v:'')),el('span','',e.n+' block'+(e.n>1?'s':'')),el('span','b'+(e.outs.length?' o':''),e.outs.length?'Out: '+e.outs.map(o=>o.who).join(', '):'In vault'),(e.parent?el('span','','Branch of v'+((DB.e.find(p=>p.id===e.parent)||{}).v||'?')+(e.by?' by '+e.by:'')):''),el('span','','Seen: '+e.seen+(DB.c.some(k=>k.name===e.seen&&k.st==='missing')?' (card missing!)':'')));
   t.onclick=()=>{pick.has(e.id)?pick.delete(e.id):pick.add(e.id);vrender()};G.append(t)});
  const P=sp(),bl=P.reduce((a,e)=>a+e.n,0);
  $('#cnt').textContent=P.length+' selected / '+bl+' of 15 blocks';$('#cnt').style.color=bl>15?'var(--bad)':'';
@@ -285,32 +295,42 @@ $('#ao').onclick=async()=>{const k=cur();if(!k||!k.h)return say('This card is no
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)recheck(0)});
 loaded.then(()=>recheck(0));
 $('#tov').onclick=()=>{const c=cards[sel.c],o=scan(c)[sel.s];if(o<0)return say('Select a save first',1);const r=addSave(c,o,c.name);if(r)lg('Added a save from '+c.name);persist();say(r?'Added to vault':'Already in vault')};
-let pend=[];
-const newer=e=>DB.e.filter(x=>x.fn===e.fn&&x.id!==e.id&&x.h!==e.h&&x.added>(e.at||e.added)).sort((a,b)=>b.added-a.added)[0];
-function back(e,x,how){const k=DB.c.find(c=>c.id===e.card);e.out='';e.card='';if(x)x.out='';lg('Checked in '+e.t+(x?' with an updated save from '+x.seen:' unchanged ('+how+')'));if(k&&!DB.e.some(y=>y.card===k.id&&y.out))delete k.out}
+function norm(e){if(!e.outs){e.outs=e.out?[{who:e.out,at:e.at||0,card:e.card||''}]:[];delete e.out;delete e.at;delete e.card}}
+const co1=(e,w)=>(e.outs||[]).find(o=>o.who===w);
+let pend={ids:[],who:''};
+const askUI=(t,m)=>{$('#askt').textContent=t;$('#askw').hidden=m!=='who';$('#askb').hidden=m!=='card';$('#ask').hidden=!m};
+function look(e,ks){const hs=new Set(ks.flatMap(k=>k.saves||[])),x=DB.e.find(y=>y.fn===e.fn&&y.h!==e.h&&hs.has(y.h));return x?{x}:hs.has(e.h)?{same:1}:null}
+function fin(e,w,r){const o=co1(e,w),k=DB.c.find(c=>c.id===o.card);e.outs=e.outs.filter(x=>x!==o);
+ if(r.x){if(!r.x.parent)r.x.parent=e.id;if(!r.x.by)r.x.by=w}
+ if(k&&!DB.e.some(y=>(y.outs||[]).some(z=>z.card===k.id)))delete k.out;
+ lg(w+' checked in '+e.t+(r.x?' with an updated copy (new branch)':' unchanged'));return r.x?1:0}
 async function checkOut(){const w=$('#who').value.trim();if(!w)return say('Enter who or which system will hold the card',1);
- const P=sp().filter(e=>!e.out);if(!P.length)return say('Select saves that are in the vault',1);
+ const S=sp(),P=S.filter(e=>!co1(e,w));if(!P.length)return say(S.length?w+' already has these saves checked out':'Select saves first',1);
  const bl=P.reduce((a,e)=>a+e.n,0);if(bl>15)return say('Too many blocks for one card: '+bl+' of 15',1);
  const c=mk('x');P.forEach(e=>place(c,e));
  const base=w.replace(/[^\w -]/g,'').trim()||'card';let name=base+'.mcr',i=1,h=null,f=null;while(DB.c.some(k=>k.name===name))name=base+'-'+ ++i+'.mcr';
  try{if(window.showSaveFilePicker){h=await showSaveFilePicker({suggestedName:name,types:[{description:'PS1 memory card',accept:{'application/octet-stream':['.mcr']}}]});const wr=await h.createWritable();await wr.write(c.d);await wr.close();f=await h.getFile();name=h.name}else await dl.save({filename:name,data:c.d})}
  catch(x){return x&&x.name==='AbortError'?say('Cancelled - nothing checked out'):say('Could not write the card file',1)}
  addCard(c.d,name,h,f);const k=DB.c.find(x=>x.name===name);k.color=$('#cc').value;k.out=w;k.gen=1;
- P.forEach(e=>{e.out=w;e.at=Date.now();e.card=k.id;pick.delete(e.id)});
+ P.forEach(e=>{(e.outs=e.outs||[]).push({who:w,at:Date.now(),card:k.id});pick.delete(e.id)});
  lg('Checked out '+P.length+' save(s) to '+w+' on '+name);persist();vrender();shelf();say('Checked out to '+w+' - card '+name+' created')}
-async function checkIn(list){const L=list.filter(e=>e.out);if(!L.length)return say('Select saves that are checked out',1);
- say('Looking for updated saves...');await recheck(1);
- const miss=[];let up=0;L.forEach(e=>{const x=newer(e);if(x){back(e,x);up++}else miss.push(e)});
- persist();vrender();shelf();
- if(!miss.length){$('#ask').hidden=true;pend=[];return say('Checked in '+L.length+' save(s), '+up+' with updates')}
- pend=miss.map(e=>e.id);$('#askt').textContent='No updated copy of '+miss.map(e=>e.t).join(', ')+' found. Choose the memory card it was on.';$('#ask').hidden=false;say(up?up+' checked in. '+miss.length+' need the memory card':'Memory card needed',1)}
-$('#co').onclick=checkOut;$('#ci').onclick=()=>checkIn(sp());
-async function giveCards(it){const names=new Set(it.map(x=>x.f.name));await scanFiles(it);
+function checkIn(list){const L=list.filter(e=>(e.outs||[]).length);if(!L.length)return say('Select saves that are checked out',1);
+ const W=[...new Set(L.flatMap(e=>e.outs.map(o=>o.who)))],B=$('#askw');B.textContent='';
+ W.forEach(w=>{const b=el('button','',w);b.onclick=()=>doIn(L,w);B.append(b)});askUI('Who is checking in?','who');say('Choose who is checking in')}
+async function doIn(L,w){const E=L.filter(e=>co1(e,w));if(!E.length)return say(w+' has none of these saves',1);
+ askUI('',0);say('Looking for updated saves...');await recheck(1);
  const miss=[];let up=0,same=0;
- DB.e.filter(e=>pend.includes(e.id)).forEach(e=>{const x=newer(e);if(x){back(e,x);up++}else if(DB.c.some(k=>names.has(k.name)&&(k.saves||[]).includes(e.h))){back(e,null,'found on the card you chose');same++}else miss.push(e)});
- persist();vrender();shelf();pend=miss.map(e=>e.id);
- if(!miss.length){$('#ask').hidden=true;say('Checked in '+(up+same)+' save(s): '+up+' updated, '+same+' unchanged')}
- else{$('#askt').textContent='Still no copy of '+miss.map(e=>e.t).join(', ')+' on that card. Try another card.';say('Not found on that card',1)}}
+ E.forEach(e=>{const k=DB.c.find(c=>c.id===co1(e,w).card),ok=c=>c.h&&c.st==='ok',r=k?(ok(k)?look(e,[k]):null):look(e,DB.c.filter(ok));if(r){fin(e,w,r)?up++:same++}else miss.push(e)});
+ persist();vrender();shelf();
+ if(!miss.length)return say(w+' checked in '+E.length+' save(s): '+up+' updated, '+same+' unchanged');
+ pend={ids:miss.map(e=>e.id),who:w};askUI('No updated copy of '+miss.map(e=>e.t).join(', ')+' found for '+w+'. Choose the memory card it was on.','card');say('Memory card needed',1)}
+$('#co').onclick=checkOut;$('#ci').onclick=()=>checkIn(sp());
+async function giveCards(it){const w=pend.who,names=new Set(it.map(x=>x.f.name));await scanFiles(it);
+ const ks=DB.c.filter(k=>names.has(k.name)),miss=[];let up=0,same=0;
+ DB.e.filter(e=>pend.ids.includes(e.id)&&co1(e,w)).forEach(e=>{const r=look(e,ks);if(r){fin(e,w,r)?up++:same++}else miss.push(e)});
+ persist();vrender();shelf();pend.ids=miss.map(e=>e.id);
+ if(!miss.length){askUI('',0);say(w+' checked in '+(up+same)+' save(s): '+up+' updated, '+same+' unchanged')}
+ else{askUI('Still no copy of '+miss.map(e=>e.t).join(', ')+' on that card. Try another card.','card');say('Not found on that card',1)}}
 $('#askb').onclick=async()=>{let it;try{if(window.showOpenFilePicker){const hs=await showOpenFilePicker({multiple:true});it=await Promise.all(hs.map(async h=>({f:await h.getFile(),h})))}
  else it=await new Promise(r=>{const i=$('#afile');i.onchange=()=>{r([...i.files].map(f=>({f,h:null})));i.value=''};i.oncancel=()=>r([]);i.click()})}catch{return}
  if(it.length)giveCards(it)};
@@ -328,8 +348,8 @@ addEventListener('drop',async e=>{if(!isF(e))return;e.preventDefault();dc=0;dz.c
  for(let i=0;i<its.length;i++){const h=H[i];if(h&&h.kind==='directory'){await dropDir(h);continue}
   if(h&&h.kind==='file')fl.push({f:await h.getFile(),h});else if(fs[i])fl.push({f:fs[i],h:null})}
  if(!fl.length)return;
- if(!$('#ed').hidden)await toEditor(fl);else if(pend.length)await giveCards(fl);else await scanFiles(fl)});
-$('#askx').onclick=()=>{pend=[];$('#ask').hidden=true;say('Still checked out')};
+ if(!$('#ed').hidden)await toEditor(fl);else if(pend.ids.length)await giveCards(fl);else await scanFiles(fl)});
+$('#askx').onclick=()=>{pend={ids:[],who:''};askUI('',0);say('Check-in cancelled')};
 $('#vd').onclick=function(){ask('v',this,()=>{const n=pick.size;DB.e=DB.e.filter(e=>!pick.has(e.id));pick.clear();lg('Removed '+n+' save(s)');persist();vrender();say('Removed from vault')})};
 $('#ex').onclick=async()=>{const P=sp(),bl=P.reduce((a,e)=>a+e.n,0);if(!P.length)return say('Select saves first',1);if(bl>15)return say('Too many blocks: '+bl+' of 15',1);
  const c=mk('PSX-VAULT.mcr');P.forEach(e=>place(c,e));
@@ -340,7 +360,7 @@ dl={save:async({filename:n,data:d})=>{const a=document.createElement('a');a.href
 $('#bk').onclick=()=>dl.save({filename:'memoryman-backup.json',data:JSON.stringify(snap(1))}).then(()=>say('Backup saved'));
 $('#rs').onclick=()=>$('#rfile').click();
 $('#rfile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{const j=JSON.parse(await f.text());let n=0;
- for(const x of j.e||[])if(x&&x.h&&x.d&&!DB.e.some(y=>y.h===x.h)){DB.e.push({id:x.id||Math.random().toString(36).slice(2),fn:x.fn,t:x.t,n:x.n,h:x.h,d:x.d,src:x.src||'',seen:x.seen||'',added:x.added||Date.now(),out:x.out||'',at:x.at});n++}
+ for(const x of j.e||[])if(x&&x.h&&x.d&&!DB.e.some(y=>y.h===x.h)){DB.e.push({id:x.id||Math.random().toString(36).slice(2),fn:x.fn,t:x.t,n:x.n,h:x.h,d:x.d,src:x.src||'',seen:x.seen||'',added:x.added||Date.now(),outs:x.outs||(x.out?[{who:x.out,at:x.at||0,card:x.card||''}]:[]),parent:x.parent,by:x.by});n++}
  for(const x of j.c||[])if(x&&x.name&&!DB.c.some(y=>y.name===x.name))DB.c.push({...x,h:null,st:'unlinked'});lg('Restored '+n+' save(s) from backup');persist();vrender();say(n+' restored')}catch{say('Not a MemoryMan backup',1)}};
 let ip;addEventListener('beforeinstallprompt',e=>{e.preventDefault();ip=e;$('#inst').hidden=false});
 $('#inst').onclick=async()=>{if(!ip)return;ip.prompt();await ip.userChoice;ip=null;$('#inst').hidden=true};
