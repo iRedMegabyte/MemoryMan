@@ -1,89 +1,72 @@
 # MemoryMan
 
-A PlayStation 1 save vault and memory card editor that runs entirely in your browser, styled after the PS1 BIOS memory card screen.
+**A personal save vault and memory card editor for PlayStation 1.** Create your own copy of MemoryMan, run it on your computer, and manage your card images in your own browser.
 
-Scan all your scattered memory card images into one library, track which saves are checked out to which console or person, and export any selection of saves as a brand new card.
+## Set up your own copy
 
-Live app: https://iredmegabyte.github.io/MemoryMan/
+MemoryMan is a static app with no package manager or build step. You need Git and Python 3 to clone and serve it locally.
 
-## Features
+1. On the MemoryMan repository page, choose **Use this template → Create a new repository**. Pick a name and set the new repository to **Private**. This creates your own independent copy. A public fork cannot be made private, so use the template option for a private repository. [GitHub: create a repository from a template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) · [Fork visibility rules](https://docs.github.com/en/pull-requests/reference/forks)
+2. Clone your new repository. Replace the placeholders with your GitHub username and repository name:
 
-**Vault**
-- Drag and drop card files or whole folders anywhere on the page. On the vault they are registered on the shelf (dropped folders become watched locations), while a card being asked for at check-in is used to find the updated save. On the Card Editor tab they load into the editor.
-- Scan one or many card images at once and collect every save into a single library.
-- Duplicates are detected by content. A changed save for the same game is kept as a new version (v1, v2, ...).
-- Each save shows its icon, title, product code, block count, status, and the card file it was last seen on.
-- Check Out generates a new memory card holding the selected saves, saves it as a file, puts it on the shelf marked as out, and records who has it. On Chrome and Edge you choose where the card file is written, so the card stays linked for rechecking.
-- Check In looks for an updated copy of each save by rechecking your shelf and watched folders. If it cannot find one, it asks you to choose the memory card the save was on. An updated save becomes a new version in the vault; if the card still has the original, the save is simply checked back in.
-- Export Card builds a new memory card file from any selected saves, up to 15 blocks, without checking them out.
-- Search and filter by in vault or checked out. A short activity log shows recent changes.
-- Backup and Restore keep your library in a portable .json file.
+   ```sh
+   git clone https://github.com/YOUR-USERNAME/YOUR-REPOSITORY.git
+   cd YOUR-REPOSITORY
+   ```
 
-**Shelf** (on the main screen, above your saves)
-- Every card you add is registered on a shelf and drawn as a PS1 memory card, with a mini grid showing which of its 15 blocks are used.
-- Pick a color per card: classic gray, solid colors, and see-through clear, smoke and tinted cards that show the circuit board inside. Give each card a label.
-- Recheck looks at every linked card file again, and the app also does this quietly when you return to it. A card whose file has disappeared is greyed out and marked MISSING, with a warning count on the Shelf tab and a flag on its saves in the vault. New or changed saves found on a card are added to the vault.
-- Locations lists typical places cards live: DuckStation, ePSXe, Mednafen, RetroArch, SD card readers, and Downloads, plus Add Folder for anything else. Choose a folder once and MemoryMan watches it: Recheck registers new cards it finds there (two levels deep) and marks cards that vanished as MISSING.
-- Cards need to be added with the file picker in a Chromium browser to be linked. Others are shown as Unlinked and cannot be rechecked.
+3. Start a local web server from the repository directory:
 
-**Card Editor**
-- Two card slots side by side with animated save icons.
-- Copy a save between cards, delete, rename, format, load and save.
-- To Vault sends the selected save into the library.
-- Arrow keys move the selection.
+   ```sh
+   python -m http.server 8000 --directory web
+   ```
 
-## Using it
+   On Windows, use `py` if `python` is not recognized. On macOS or Linux, use `python3` if needed.
 
-1. Open the app and choose Scan Cards. Pick your .mcr, .mcd or other card files.
-2. Click tiles to select saves. The counter shows blocks used out of 15.
-3. Type a holder (for example "Living Room PS1" or a player name) and choose Check Out to generate a card for them. Later, select the saves and choose Check In.
-4. Use Backup now and then, especially before renaming the repo or moving the app to another address.
+4. Open <http://localhost:8000> and choose **Add Cards** to import your card images.
 
-## Supported files
+Keep the server running while you use the app. To stop it, return to the terminal and press **Ctrl+C**. You can install MemoryMan from a compatible browser; after the first visit, it can work offline.
 
-- Raw 128 KB images: .mcr, .mcd, .mc, .srm, .bin
-- DexDrive .gme and PSP .vmp images can be read. Saving always writes a raw .mcr.
+## Move your library from the demo
 
-## Install as an app
+If you have saves in the live demo, choose **Backup** there first. Open your local copy and choose **Restore** to load that JSON backup. Restored saves and shelf details come across, but browser file permissions and watched folders do not; add or link those card files again.
 
-MemoryMan is a Progressive Web App. In Chrome, Edge or Safari, use the browser's Install option, or the Install button that appears in the vault toolbar. After one visit it works offline.
+The [live demo](https://iredmegabyte.github.io/MemoryMan/) is a preview. Its library belongs to that browser and site address, so it does not automatically appear in your own copy.
 
-On Chrome and Edge, an installed copy can open card files directly. Raw .mcr files opened this way can be saved back in place.
+## What the app does
 
-## Hosting your own copy
+### Vault and shelf
 
-1. Put these files in the root of a GitHub repository: index.html, sw.js, manifest.webmanifest, icon.svg, icon-192.png, icon-512.png.
-2. In the repository Settings, open Pages and set the source to the main branch, root folder.
-3. Visit https://USERNAME.github.io/REPOSITORY/ and install it.
+- Scan multiple card images into one searchable library. Identical save content is recognized; changed content is kept as another version.
+- Track checkouts by person or console, and create a new card from selected saves. Cards hold up to 15 blocks.
+- Keep a shelf of card files with labels, colors, used-block maps, and status. Recheck linked files or choose folders to watch for card images; folder scans look up to two levels deep.
+- Back up and restore your library with a JSON file.
 
-All paths are relative, so it works from a repository subfolder. Any static HTTPS host will do.
+### Card Editor
 
-## Privacy and storage
+Open two cards side by side to inspect their 15 save slots. Copy saves between cards, send a save to the Vault, or rename, delete, and format saves. Use the arrow keys to move between slots. **Save** writes to a linked raw card file when supported; otherwise, it downloads a raw `.mcr` image.
 
-Everything stays on your device. Nothing is uploaded anywhere.
+## Where your data lives
 
-The library is stored in your browser's IndexedDB for the exact address you opened. A different address, browser or device starts with an empty library. Use Backup and Restore to move it.
+**The template repository is currently for the app code. MemoryMan does not yet sync saves to GitHub.** Your library is stored in IndexedDB in the browser profile and site origin where you run the app. The app does not upload card contents. Use **Backup** to create a portable copy and store that backup somewhere safe.
 
-## Limitations
+Creating a private template repository keeps your app copy private on GitHub, but it does not itself back up your browser library. A different browser profile or site address has a separate library. The template copy also does not receive app updates automatically.
 
-- Rechecking can only tell whether a card file is still where it was. It cannot see a physical card, and the browser may ask for access to the files again after a restart (the card shows Needs access until you allow it).
-- Browsers cannot read arbitrary paths, so the Locations list only shows where to look and opens the folder picker near a sensible starting point. Folder watching needs Chrome or Edge, and the browser may refuse some top-level system folders (pick a subfolder instead). Folder paths in the list are typical, not guaranteed.
-- Check-out tracking is a manual ledger. The app cannot see where a physical card is. The "Seen" line only updates when you scan a card.
-- Rename supports A to Z, 0 to 9, space and a few punctuation marks, stored as full-width Shift-JIS.
-- Deleted saves are marked free the way the console does it. There is no undelete yet.
-- It works with card image files only. It does not talk to memory card hardware.
+## Card images and browser support
 
-## Card format notes
+MemoryMan reads raw 128 KB card images with `.mcr`, `.mcd`, `.mc`, `.srm`, or `.bin` extensions, plus supported DexDrive `.gme` and PSP `.vmp` images. Edited and exported cards are written as raw `.mcr` files.
 
-A raw card is 131072 bytes, split into 16 blocks of 8192 bytes. Block 0 holds the directory: a header frame ("MC") followed by 15 directory frames of 128 bytes. Each frame holds an allocation state (0x51 first block, 0x52 middle, 0x53 last, 0xA0 free, 0xA1 to 0xA3 deleted), the file size, the next block index, a 20 byte file name, and an XOR checksum. Each save block starts with an "SC" header containing the Shift-JIS title, a 16 color palette, and one to three 16x16 4-bit icon frames.
+Basic scanning, editing, and downloads work in modern browsers. Linked card files, watched folders, and saving changes directly to a file use browser file-system features best supported in desktop Chrome and Edge. The browser may ask you to grant file or folder access again later. MemoryMan works with card image files; it does not connect to physical memory card hardware.
 
-## Files
+## Hosting instead of running locally
 
-- index.html: the whole app, with no dependencies or build step
-- sw.js: service worker for offline use
-- manifest.webmanifest: install metadata and file handlers
-- icon.svg, icon-192.png, icon-512.png: app icons
+You can publish the **contents of `web/`** as the site root on a static HTTPS host. Keep the files together; paths are relative, so the app can also run under a URL subpath. A private source repository does not automatically make the hosted site private; check your host's access settings.
 
-## Status
+## Project files
 
-Early and lightly tested. Please keep a backup of any card image you care about before editing it. Reports and feedback are welcome.
+| File | Purpose |
+| --- | --- |
+| `index.html` | Complete app interface and logic; no external dependencies |
+| `sw.js` | Offline app cache |
+| `manifest.webmanifest` | Install metadata and card-file associations |
+| `icon.svg`, `icon-192.png`, `icon-512.png` | App icons |
+
